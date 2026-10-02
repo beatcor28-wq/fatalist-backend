@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from spotify_service import import_spotify_playlist
-from stream_service import get_stream_url
+from stream_service import generate_audio_stream
 from ytmusic_service import get_playlist_tracks, get_related_tracks, get_track_lyrics, get_trending_playlists, search_tracks
 
 
@@ -17,7 +17,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Tambahkan CORS Middleware agar aplikasi React Native dapat mengakses API
+# CORS Middleware agar React Native dapat mengakses API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -73,7 +73,8 @@ def import_playlist_from_spotify(payload: SpotifyPlaylistImport):
 
 @app.get("/api/stream/{video_id}")
 def stream(video_id: str):
-    url = get_stream_url(video_id)
-    if not url:
-        raise HTTPException(status_code=404, detail="Audio stream not found")
-    return {"video_id": video_id, "stream_url": url}
+    """
+    Endpoint pemutaran audio langsung. 
+    URL endpoint ini bisa langsung dimasukkan ke audio player React Native.
+    """
+    return generate_audio_stream(video_id)
