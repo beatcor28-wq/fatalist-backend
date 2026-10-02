@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from spotify_service import import_spotify_playlist
@@ -14,6 +15,15 @@ app = FastAPI(
     title="Fatalist API",
     description="Backend API untuk Aplikasi Streaming Musik Fatalist",
     version="1.0.0",
+)
+
+# Tambahkan CORS Middleware agar aplikasi React Native dapat mengakses API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class SpotifyPlaylistImport(BaseModel):
